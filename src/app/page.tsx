@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { data } from "@/service/data";
 import { ocr } from "@/service/ocr";
 
@@ -15,7 +15,6 @@ export default function Home() {
 
   return (
     <Card className="min-h-screen grid place-items justify-center">
-      
       <pre className="">{data}</pre>
       <Button onClick={handleProcess} className="cursor-pointer">Processar</Button>
       
