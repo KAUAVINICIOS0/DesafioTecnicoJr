@@ -1,9 +1,16 @@
-export function ocr(text: string){
+export function ocr(text: string) {
 
     const lines = text
         .split('\n')
         .map(l => l.trim())
         .filter(Boolean);
+
+    const descriptionRegex = /[A-Za-zÀ-ÿ]+/g;
+    const quantityRegex = /\d+/;
+    const valueRegex = /\d+,\d{2}/;
+    const totalValueRegex = /(\d+,\d{2})$/;
+    const items: any[] = [];
+
 
     const marketName = lines[0];
 
@@ -13,43 +20,40 @@ export function ocr(text: string){
 
     const hour = lines[3].match(/\d{1,2}:\d{2}/);
 
-    const description = lines[5].match(/[A-Za-z]+/g)?.join(' ')?? '';
+    for (let i = 5; i < lines.length; i++) {
+        
+        if (lines[i].includes('R$')) break;
 
-    const quantity = lines[5].match(/\d+/);
+        const description = lines[i].match(descriptionRegex)?.join(' ') ?? '';
+        const quantity = lines[i].match(quantityRegex)?.[0] ?? null;
+        const unitValor = lines[i].match(valueRegex)?.[0] ?? null;
+        const totalValue = lines[i].match(totalValueRegex)?.[0] ?? null;
 
-    const unitValor = lines[5].match(/\d+,\d{2}/);
+        
+        if (!description && !quantity && !unitValor) continue;
 
-    const description1 = lines[6].match(/[A-Za-z]+/g)?.join(' ')?? '';
-
-    const quantity1 = lines[6].match(/\d+/);
-
-    const unitValor1 = lines[6].match(/\d+,\d{2}/);
+        items.push({
+            description,
+            quantity,
+            unitValor,
+            totalValue,
+        });
+    }
 
     const total = lines[7].match(/R\$\s\d{1,2},\d{1,2}/)
 
     const payment = lines[8].match(/([A-Za-zÀ-ÿ ]+)/g);
 
-    
+
     return {
         business: {
             name: marketName,
             cnpj: cnpj?.[0] ?? null,
         },
-        date: date?.[0] ??null,
-        hour: hour?.[0] ??null,
-        items: [
-            {
-                description: description,
-                quantity: quantity?.[0] ?? null,
-                unitValor: unitValor?.[0]??null,
-            },
-            {
-                description: description1,
-                quantity: quantity1?.[0] ?? null,
-                unitValor: unitValor1?.[0]??null,
-            },
-        ],
-        total:total?.[0]??null,
-        payment:payment?.[1]??null,
+        date: date?.[0] ?? null,
+        hour: hour?.[0] ?? null,
+        items,
+        total: total?.[0] ?? null,
+        payment: payment?.[1] ?? null,
     }
 }
