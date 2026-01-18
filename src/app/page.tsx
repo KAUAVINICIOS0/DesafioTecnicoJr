@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { data } from "@/service/data";
 import { ocr } from "@/service/ocr";
 
@@ -17,7 +17,7 @@ export default function Home() {
     <Card className="min-h-screen grid place-items justify-center">
       <pre className="">{data}</pre>
       <Button onClick={handleProcess} className="cursor-pointer">Processar</Button>
-      
+
       {result && (
         <pre className="bg-black text-green-400 p-4 rounded w-full max-w-xl text-sm overflow-auto">
           {JSON.stringify(result, null, 2)}
